@@ -104,7 +104,14 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
+
+def get_token():
+    with open('secrets.json', 'r') as f:
+        data = json.load(f)
+    return data['token']
+
 def send_email(username, email, pin):
+    token = get_token()
     from_email = "signupconfirmation83@gmail.com"
     to_email = email
     subject = "Signup Confirmation"
@@ -117,7 +124,7 @@ def send_email(username, email, pin):
     try:
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.starttls()
-        server.login(from_email, "xfefyyqmdalucoki")
+        server.login(from_email,token )
         server.sendmail(from_email, to_email, msg.as_string())
         print("Email sent successfully!")
     except Exception as e:
@@ -142,7 +149,7 @@ def check_PIN(username, password, email, pin_input, data, pin):
         st.success("Successfully Created Account")
         st.session_state.signup_confirmation = False
     else:
-        st.error("Incorrect Pin, Correct pin was: " + str(pin))
+        st.error("Incorrect Pin, Correct pin was: " + str(pin) + "You entered: " + pin_input, icon="🚨", )
         st.session_state.signup_confirmation = False
     
 
@@ -242,7 +249,9 @@ def main():
             st.button('Log Out',on_click=logout)
 
 if __name__ == "__main__":
-    st.session_state.is_loggedin = False
+    if 'is_loggedin' not in st.session_state:
+
+        st.session_state.is_loggedin = False
 
     if 'signup_confirmation' not in st.session_state:
         st.session_state.signup_confirmation = False
