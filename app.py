@@ -142,7 +142,8 @@ def check_PIN(username, password, email, pin_input, data, pin):
         st.success("Successfully Created Account")
         st.session_state.signup_confirmation = False
     else:
-        st.error("Incorrect Pin")
+        st.error("Incorrect Pin, Correct pin was: " + str(pin))
+        st.session_state.signup_confirmation = False
     
 
 
